@@ -1,0 +1,136 @@
+<!doctype>
+
+<htmml>
+
+
+	<Head>
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+
+	<head>
+
+
+<body>
+    <div class="auth-container">
+        <h1>NetWorth Network</h1>
+        <div class="tab-buttons">
+            <button class="tab active" onclick="showForm('login')">Login</button>
+            <button class="tab" onclick="showForm('signup')">Sign Up</button>
+        </div>
+        
+        <div id="login-form" class="form-container">
+            <form>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+
+        <div id="signup-form" class="form-container hidden">
+            <form>
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <input type="password" placeholder="Confirm Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <h2>Home/Dashboard</h2>
+        <div class="market-data">
+            <h3>Market Data</h3>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Symbol</th>
+                    <th>Price</th>
+                    <th>24h Change</th>
+                    <th>Market Cap</th>
+                </tr>
+                <tr>
+                    <td>Bitcoin</td>
+                    <td>BTC</td>
+                    <td>$45,000</td>
+                    <td>+3.5%</td>
+                    <td>$850B</td>
+                </tr>
+                <tr>
+                    <td>Ethereum</td>
+                    <td>ETH</td>
+                    <td>$3,200</td>
+                    <td>+2.8%</td>
+                    <td>$400B</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="trade-section">
+        <h2>Buy & Trade Cryptocurrencies</h2>
+        <form>
+            <label for="crypto-select">Select Cryptocurrency:</label>
+            <select id="crypto-select">
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="ETH">Ethereum (ETH)</option>
+                <option value="ADA">Cardano (ADA)</option>
+            </select>
+            <input type="number" placeholder="Enter Amount" required>
+            <button type="submit">Buy</button>
+            <button type="submit">Sell</button>
+        </form>
+    </div>
+
+    <div class="payment-section">
+        <h2>Wallet & Payment Methods</h2>
+        <form>
+            <label for="payment-method">Select Payment Method:</label>
+            <select id="payment-method">
+                <option value="apple-pay">Apple Pay</option>
+                <option value="google-pay">Google Pay</option>
+                <option value="wire-transfer">Wire Transfer</option>
+                <option value="credit-card">Credit/Debit Card</option>
+            </select>
+            <input type="text" placeholder="Enter Payment Details" required>
+            <button type="submit">Add Funds</button>
+        </form>
+    </div>
+
+    <div class="user-transactions">
+        <h2>Transaction History</h2>
+        <table>
+            <tr>
+                <th>Date & Time</th>
+                <th>Type</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total Value</th>
+                <th>Fees</th>
+                <th>Status</th>
+                <th>Blockchain Confirmation ID</th>
+            </tr>
+            <tr>
+                <td>2025-02-10 14:30</td>
+                <td>Buy</td>
+                <td>1 BTC</td>
+                <td>$45,000</td>
+                <td>$45,000</td>
+                <td>$10</td>
+                <td>Completed</td>
+                <td>ABC123XYZ789</td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function showForm(form) {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('signup-form').classList.add('hidden');
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(`${form}-form`).classList.remove('hidden');
+            document.querySelector(`.tab[onclick="showForm('${form}')"]`).classList.add('active');
+        }
+    </script>
+</body>
+</html>
