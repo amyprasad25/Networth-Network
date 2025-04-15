@@ -1,135 +1,115 @@
-<!doctype>
-
-<htmml>
-
-
-	<Head>
-		<link rel="stylesheet" type="text/css" href="css/styles.css">
-
-	<head>
-
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+    <head>
 
 <body>
-    <div class="auth-container">
-        <h1>NetWorth Network</h1>
-        <div class="tab-buttons">
-            <button class="tab active" onclick="showForm('login')">Login</button>
-            <button class="tab" onclick="showForm('signup')">Sign Up</button>
-        </div>
-        
-        <div id="login-form" class="form-container">
-            <form>
+    <div class="container">
+        <div id="auth-page" class="page" style="display:block; opacity:1">
+            <h1>NetWorth Network</h1>
+            <div class="tab-buttons">
+                <button class="tab active" onclick="toggleAuth('login')">Login</button>
+                <button class="tab" onclick="toggleAuth('signup')">Sign Up</button>
+            </div>
+            <div id="login-form">
                 <input type="email" placeholder="Email" required>
                 <input type="password" placeholder="Password" required>
-                <button type="submit">Sign In</button>
-            </form>
-        </div>
-
-        <div id="signup-form" class="form-container hidden">
-            <form>
+                <button onclick="enterApp()">Login</button>
+            </div>
+            <div id="signup-form" class="hidden">
                 <input type="text" placeholder="Full Name" required>
                 <input type="email" placeholder="Email" required>
                 <input type="password" placeholder="Password" required>
-                <input type="password" placeholder="Confirm Password" required>
-                <button type="submit">Sign Up</button>
-            </form>
+                <button onclick="enterApp()">Sign Up</button>
+            </div>
         </div>
-    </div>
 
-    <div class="dashboard">
-        <h2>Home/Dashboard</h2>
-        <div class="market-data">
-            <h3>Market Data</h3>
+        <div id="dashboard-page" class="page">
+            <h2>Welcome to Your Dashboard</h2>
+            <div class="tab-buttons">
+                <button class="tab" onclick="switchPage('dashboard')">Home</button>
+                <button class="tab" onclick="switchPage('price-listings')">Price Listings</button>
+                <button class="tab" onclick="switchPage('wallet')">Wallet</button>
+                <button class="tab" onclick="switchPage('transactions')">Transactions</button>
+                <button class="tab" onclick="switchPage('market-insights')">Market Insights</button>
+            </div>
+        </div>
+
+        <div id="price-listings" class="page">
+            <h2>Cryptocurrency Prices</h2>
             <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Symbol</th>
-                    <th>Price</th>
-                    <th>24h Change</th>
-                    <th>Market Cap</th>
-                </tr>
-                <tr>
-                    <td>Bitcoin</td>
-                    <td>BTC</td>
-                    <td>$45,000</td>
-                    <td>+3.5%</td>
-                    <td>$850B</td>
-                </tr>
-                <tr>
-                    <td>Ethereum</td>
-                    <td>ETH</td>
-                    <td>$3,200</td>
-                    <td>+2.8%</td>
-                    <td>$400B</td>
-                </tr>
+                <tr><th>Name</th><th>Price</th><th>Change</th></tr>
+                <tr><td>Bitcoin (BTC)</td><td>$64,000</td><td>+3.5%</td></tr>
+                <tr><td>Ethereum (ETH)</td><td>$3,200</td><td>+1.2%</td></tr>
+                <tr><td>Cardano (ADA)</td><td>$1.20</td><td>-0.8%</td></tr>
             </table>
         </div>
-    </div>
 
-    <div class="trade-section">
-        <h2>Buy & Trade Cryptocurrencies</h2>
-        <form>
-            <label for="crypto-select">Select Cryptocurrency:</label>
-            <select id="crypto-select">
-                <option value="BTC">Bitcoin (BTC)</option>
-                <option value="ETH">Ethereum (ETH)</option>
-                <option value="ADA">Cardano (ADA)</option>
-            </select>
-            <input type="number" placeholder="Enter Amount" required>
-            <button type="submit">Buy</button>
-            <button type="submit">Sell</button>
-        </form>
-    </div>
+        <div id="wallet" class="page">
+            <h2>Your Wallet</h2>
+            <form>
+                <label>Select Cryptocurrency:</label>
+                <select>
+                    <option>Bitcoin</option>
+                    <option>Ethereum</option>
+                    <option>Cardano</option>
+                </select>
+                <input type="number" placeholder="Amount">
+                <label>Select Payment Method:</label>
+                <select>
+                    <option>Apple Pay</option>
+                    <option>Google Pay</option>
+                    <option>Wire Transfer</option>
+                    <option>Credit Card</option>
+                </select>
+                <button>Buy</button>
+                <button>Sell</button>
+            </form>
+        </div>
 
-    <div class="payment-section">
-        <h2>Wallet & Payment Methods</h2>
-        <form>
-            <label for="payment-method">Select Payment Method:</label>
-            <select id="payment-method">
-                <option value="apple-pay">Apple Pay</option>
-                <option value="google-pay">Google Pay</option>
-                <option value="wire-transfer">Wire Transfer</option>
-                <option value="credit-card">Credit/Debit Card</option>
-            </select>
-            <input type="text" placeholder="Enter Payment Details" required>
-            <button type="submit">Add Funds</button>
-        </form>
-    </div>
+        <div id="transactions" class="page">
+            <h2>Transaction History</h2>
+            <table>
+                <tr><th>Date</th><th>Type</th><th>Amount</th><th>Status</th></tr>
+                <tr><td>2025-04-12</td><td>Buy</td><td>0.5 BTC</td><td>Completed</td></tr>
+            </table>
+        </div>
 
-    <div class="user-transactions">
-        <h2>Transaction History</h2>
-        <table>
-            <tr>
-                <th>Date & Time</th>
-                <th>Type</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Total Value</th>
-                <th>Fees</th>
-                <th>Status</th>
-                <th>Blockchain Confirmation ID</th>
-            </tr>
-            <tr>
-                <td>2025-02-10 14:30</td>
-                <td>Buy</td>
-                <td>1 BTC</td>
-                <td>$45,000</td>
-                <td>$45,000</td>
-                <td>$10</td>
-                <td>Completed</td>
-                <td>ABC123XYZ789</td>
-            </tr>
-        </table>
+        <div id="market-insights" class="page">
+            <h2>Market Insights</h2>
+            <p>Bitcoin is seeing a rise due to increased institutional interest. Ethereum is stabilizing post-update. Cardano's upcoming fork could affect prices.</p>
+        </div>
     </div>
 
     <script>
-        function showForm(form) {
+        function toggleAuth(type) {
             document.getElementById('login-form').classList.add('hidden');
             document.getElementById('signup-form').classList.add('hidden');
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            
-            document.getElementById(`${form}-form`).classList.remove('hidden');
-            document.querySelector(`.tab[onclick="showForm('${form}')"]`).classList.add('active');
+            document.querySelectorAll('.tab-buttons .tab').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.tab[onclick="toggleAuth('${type}')"]`).classList.add('active');
+            document.getElementById(`${type}-form`).classList.remove('hidden');
+        }
+
+        function enterApp() {
+            document.getElementById('auth-page').style.display = 'none';
+            showPage('dashboard-page');
+            showPage('price-listings');
+        }
+
+        function switchPage(id) {
+            document.querySelectorAll('.page').forEach(p => {
+                if (p.id !== 'dashboard-page') {
+                    p.style.display = 'none';
+                    p.style.opacity = 0;
+                }
+            });
+            showPage(id);
+        }
+
+        function showPage(id) {
+            const el = document.getElementById(id);
+            el.style.display = 'block';
+            setTimeout(() => el.style.opacity = 1, 10);
         }
     </script>
 </body>
