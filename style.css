@@ -1,86 +1,58 @@
-body{
-	background:#989D95;
-}
-/*key (background in this example) is a rule that we set in css*/
-/* value is the value or choice we use for that key (color in this example) creating a key value pair*/
-#div_one{
-	color:blueviolet;
-	background:whitesmoke;
-	font-size:20px;
-}
-#sign_up_li{
-	padding: 0;
-	margin: 0;
-}
-.sign_up_li{
-	list-style:none;
-	height:40px;
-	padding: 0;
-	margin: 0;
-	background:  black;
-	border-bottom: 1px solid  #32F1E5 ;
-
-}
-.sign_up_li>input{
-	height: 30px;
-	width: 100px;
-	border-radius: 3px;
-	border: none;
-	margin-left: 3px;
-
-}
-
-/*if you use a . it will look for a class  vs when you use # it will look for a class*/
-
 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NetWorth Network</title>
-    <link rel="stylesheet" href="styles.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #171817;
-            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
             text-align: center;
         }
 
-        .auth-container, .dashboard, .market-data, .price-listings, .favorites, .wallet, .market-insights, .transactions, .trade-section, .payment-section, .user-transactions {
-            background: #232323;
+        .container {
+            max-width: 1000px;
+            margin: auto;
             padding: 20px;
-            margin: 20px auto;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .page {
+            background-color: #232323;
+            padding: 30px;
             border-radius: 10px;
-            max-width: 800px;
+            margin: 20px auto;
+            display: none;
+            opacity: 0;
+            transition: opacity 1.5s ease;
         }
 
         .tab-buttons {
             display: flex;
             justify-content: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .tab {
-            background: #7AF132;
-            padding: 10px;
+            background-color: #7AF132;
+            color: black;
             border: none;
-            cursor: pointer;
+            padding: 10px 20px;
             font-size: 16px;
             border-radius: 5px;
+            cursor: pointer;
         }
 
         .tab.active {
-            background: #32F1E5;
-            color:black;
-        }
-
-        .form-container {
-            margin-top: 20px;
-        }
-
-        .hidden {
-            display: none;
+            background-color: #32F1E5;
         }
 
         input, button, select {
@@ -94,36 +66,20 @@ body{
         button {
             background: #7AF132;
             color: black;
-            cursor: pointer;
             font-size: 16px;
+            cursor: pointer;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         th, td {
             padding: 10px;
+            border-bottom: 1px solid #32F1E5;
             text-align: left;
-            border-bottom: 1px solid #7AF132;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            padding: 10px;
-        }
-
-        img {
-            width: 40px;
-            height: 40px;
-            vertical-align: middle;
-            margin-right: 10px;
         }
     </style>
 </head>
