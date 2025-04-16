@@ -6,31 +6,16 @@
   <title>NetWorth Network</title>
   <link rel="stylesheet" href="style.css" />
   <meta name="theme-color" content="#121212" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
-  <!-- Return to Dashboard Button -->
-  <button id="back-to-dashboard" onclick="switchPage('dashboard-page')" style="
-    display: none;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 10px 15px;
-    background-color: #00c853;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 999;
-  ">Return to Dashboard</button>
+  <button id="back-to-dashboard" onclick="switchPage('dashboard-page')" style="display:none; position:fixed; top:20px; right:20px; padding:10px 15px; background-color:#00c853; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; z-index:999;">Return to Dashboard</button>
 
   <div class="container">
     <!-- Auth Page -->
     <div id="auth-page" class="page" style="display:block; opacity:1">
       <h1>NetWorth Network</h1>
-      <img src="images/logo.jpeg" alt="NetWorth Network Logo"
-           style="max-width: 200px; margin: 10px auto; display: block;" />
+      <img src="images/logo.jpeg" alt="NetWorth Network Logo" style="max-width: 200px; margin: 10px auto; display: block;" />
       <div class="tab-buttons">
         <button class="tab active" onclick="toggleAuth('login')">Login</button>
         <button class="tab" onclick="toggleAuth('signup')">Sign Up</button>
@@ -52,7 +37,7 @@
     <div id="dashboard-page" class="page">
       <h2>Welcome to Your Dashboard</h2>
       <div class="tab-buttons">
-        <button class="tab" onclick="switchPage('dashboard-page')">Home</button>
+        <button class="tab active" onclick="switchPage('dashboard-page')">Home</button>
         <button class="tab" onclick="switchPage('wallet')">Wallet</button>
         <button class="tab" onclick="switchPage('transactions')">Transactions</button>
         <button class="tab" onclick="switchPage('market-insights')">Market Insights</button>
@@ -60,9 +45,16 @@
 
       <h3>Live Cryptocurrency Prices</h3>
       <table id="crypto-table">
-        <thead><tr><th>Name</th><th>Price</th><th>Change</th></tr></thead>
-        <tbody id="crypto-table-body"><tr><td colspan="3">Loading data...</td></tr></tbody>
+        <thead>
+          <tr>
+            <th>Name</th><th>Price</th><th>24h Change</th><th>Market Cap</th><th>Volume</th><th>High</th><th>Low</th><th>Rank</th>
+          </tr>
+        </thead>
+        <tbody id="crypto-table-body">
+          <tr><td colspan="8">Loading data...</td></tr>
+        </tbody>
       </table>
+      <canvas id="priceChart" width="600" height="300" style="margin-top: 40px;"></canvas>
     </div>
 
     <!-- Wallet -->
@@ -71,18 +63,11 @@
       <form>
         <label>Select Cryptocurrency:</label>
         <select id="wallet-crypto">
-          <option>Bitcoin</option>
-          <option>Ethereum</option>
-          <option>Cardano</option>
+          <option>bitcoin</option>
+          <option>ethereum</option>
+          <option>cardano</option>
         </select>
         <input id="wallet-amount" type="number" placeholder="Amount">
-        <label>Select Payment Method:</label>
-        <select>
-          <option>Apple Pay</option>
-          <option>Google Pay</option>
-          <option>Wire Transfer</option>
-          <option>Credit Card</option>
-        </select>
         <button type="button" onclick="startPayment()">Buy</button>
         <button type="button">Sell</button>
       </form>
@@ -100,189 +85,200 @@
         </div>
         <input type="text" placeholder="Billing ZIP Code" maxlength="10" required />
         <button type="submit">Submit Payment</button>
-        <button type="button" onclick="switchPage('wallet')">Back to Wallet</button>
       </form>
     </div>
 
     <!-- Confirmation Page -->
     <div id="confirmation-page" class="page">
       <h2>Payment Confirmed ✅</h2>
-      <p>Thank you! Your transaction has been successfully processed.</p>
+      <p>Your transaction has been successfully processed.</p>
       <button onclick="switchPage('dashboard-page')">Return to Dashboard</button>
     </div>
 
-    <!-- Transactions -->
-    <div id="transactions" class="page">
-      <h2>Transaction History</h2>
-      <table>
-        <thead>
-          <tr><th>Date</th><th>Type</th><th>Amount</th><th>Status</th></tr>
-        </thead>
-        <tbody id="transactions-table-body">
-          <!-- Populated by JS -->
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Market Insights -->
-    <div id="market-insights" class="page">
-      <h2>Market Insights</h2>
-      <p>Bitcoin is seeing a rise due to increased institutional interest. Ethereum is stabilizing post-update. Cardano's upcoming fork could affect prices.</p>
-    </div>
-  </div>
-
-  <script>
-    function toggleAuth(type) {
-      const loginForm = document.getElementById("login-form");
-      const signupForm = document.getElementById("signup-form");
-      if (type === "login") {
-        loginForm.classList.remove("hidden");
-        signupForm.classList.add("hidden");
-      } else {
-        signupForm.classList.remove("hidden");
-        loginForm.classList.add("hidden");
-      }
-    }
-
-    function signup() {
-      const name = document.getElementById("signup-name").value;
-      const email = document.getElementById("signup-email").value;
-      const password = document.getElementById("signup-password").value;
-      if (email && password) {
-        localStorage.setItem("user", JSON.stringify({ name, email, password }));
-        alert("Sign up successful! Please login.");
-        toggleAuth('login');
-      } else {
-        alert("Please fill in all fields.");
-      }
-    }
-
-    function login() {
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user && user.email === email && user.password === password) {
-        enterApp();
-      } else {
-        alert("Invalid email or password");
-      }
-    }
-
-    function enterApp() {
-      switchPage('dashboard-page');
-      fetchCryptoPrices();
-    }
-
-    function switchPage(pageId) {
-      const pages = document.querySelectorAll('.page');
-      pages.forEach(page => {
-        page.style.display = 'none';
-        page.style.opacity = 0;
-      });
-      const activePage = document.getElementById(pageId);
-      activePage.style.display = 'block';
-      setTimeout(() => { activePage.style.opacity = 1; }, 10);
-
-      // Show/hide dashboard button
-      const backBtn = document.getElementById("back-to-dashboard");
-      backBtn.style.display = (pageId === "dashboard-page") ? "none" : "block";
-
-      if (pageId === "transactions") {
-        loadTransactions();
-      }
-    }
-
-    async function fetchCryptoPrices() {
-      const apiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,matic-network&vs_currencies=usd&include_24hr_change=true";
-      try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        const tableBody = document.getElementById("crypto-table-body");
-        tableBody.innerHTML = "";
-        const cryptoNames = {
-          bitcoin: "Bitcoin", ethereum: "Ethereum", binancecoin: "BNB",
-          solana: "Solana", "matic-network": "Polygon"
-        };
-        for (let id in cryptoNames) {
-          if (data[id]) {
-            const price = data[id].usd.toFixed(2);
-            const change = data[id].usd_24h_change.toFixed(2);
-            const color = change >= 0 ? "green" : "red";
-            const row = document.createElement("tr");
-            row.innerHTML = `
-              <td>${cryptoNames[id]}</td>
-              <td>$${price}</td>
-              <td style="color:${color}">${change}%</td>
-            `;
-            tableBody.appendChild(row);
+        <!-- Transactions -->
+        <div id="transactions" class="page">
+          <h2>Transaction History</h2>
+          <table>
+            <thead>
+              <tr><th>Date</th><th>Type</th><th>Amount</th><th>Status</th></tr>
+            </thead>
+            <tbody id="transactions-table-body"></tbody>
+          </table>
+        </div>
+    
+        <!-- Market Insights -->
+        <div id="market-insights" class="page">
+          <h2>Live Market Insights</h2>
+          <p><strong>Global Stats:</strong></p>
+          <ul id="global-insights"><li>Loading market data...</li></ul>
+          <h3 style="margin-top: 30px;">Trending Coins (Top 7)</h3>
+          <ul id="trending-coins"><li>Loading trending coins...</li></ul>
+        </div>
+      </div>
+    
+      <script>
+        let chart;
+    
+        function toggleAuth(type) {
+          document.getElementById('login-form').classList.add('hidden');
+          document.getElementById('signup-form').classList.add('hidden');
+          document.querySelectorAll('.tab-buttons .tab').forEach(btn => btn.classList.remove('active'));
+          document.querySelector(`.tab[onclick="toggleAuth('${type}')"]`).classList.add('active');
+          document.getElementById(`${type}-form`).classList.remove('hidden');
+        }
+    
+        function signup() {
+          const name = document.getElementById("signup-name").value;
+          const email = document.getElementById("signup-email").value;
+          const password = document.getElementById("signup-password").value;
+          if (email && password) {
+            localStorage.setItem("user", JSON.stringify({ name, email, password }));
+            alert("Signup successful. Please login.");
+            toggleAuth("login");
           }
         }
-      } catch (error) {
-        document.getElementById("crypto-table-body").innerHTML = `<tr><td colspan="3">Failed to fetch prices.</td></tr>`;
-        console.error("Fetch error:", error);
-      }
-    }
-
-    function startPayment() {
-      const crypto = document.getElementById("wallet-crypto").value;
-      const amount = document.getElementById("wallet-amount").value;
-
-      if (!amount || amount <= 0) {
-        alert("Please enter a valid amount.");
-        return;
-      }
-
-      sessionStorage.setItem("pendingCrypto", crypto);
-      sessionStorage.setItem("pendingAmount", amount);
-      switchPage("payment-page");
-    }
-
-    function processPayment(e) {
-      e.preventDefault();
-      const crypto = sessionStorage.getItem("pendingCrypto");
-      const amount = sessionStorage.getItem("pendingAmount");
-
-      const transaction = {
-        date: new Date().toISOString().split("T")[0],
-        type: "Buy",
-        amount: `${amount} ${crypto}`,
-        status: "Completed"
-      };
-
-      let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-      transactions.push(transaction);
-      localStorage.setItem("transactions", JSON.stringify(transactions));
-
-      switchPage('confirmation-page');
-    }
-
-    function loadTransactions() {
-      const tableBody = document.getElementById("transactions-table-body");
-      tableBody.innerHTML = "";
-      const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-
-      if (transactions.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="4">No transactions yet.</td></tr>`;
-        return;
-      }
-
-      transactions.forEach(tx => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${tx.date}</td>
-          <td>${tx.type}</td>
-          <td>${tx.amount}</td>
-          <td>${tx.status}</td>
-        `;
-        tableBody.appendChild(row);
-      });
-    }
-  </script>
-
-  <style>
-    .hidden { display: none; }
-    .tab.active { font-weight: bold; }
-    .page { display: none; opacity: 0; transition: opacity 0.3s ease; }
-  </style>
-</body>
-</html>
+    
+        function login() {
+          const email = document.getElementById("login-email").value;
+          const password = document.getElementById("login-password").value;
+          const user = JSON.parse(localStorage.getItem("user"));
+          if (user && user.email === email && user.password === password) {
+            switchPage("dashboard-page");
+            fetchCryptoData();
+          } else {
+            alert("Invalid email or password");
+          }
+        }
+    
+        function switchPage(id) {
+          document.querySelectorAll('.page').forEach(p => {
+            p.style.display = 'none';
+            p.style.opacity = 0;
+          });
+          const el = document.getElementById(id);
+          el.style.display = 'block';
+          setTimeout(() => el.style.opacity = 1, 10);
+          document.getElementById('back-to-dashboard').style.display = id === 'dashboard-page' ? 'none' : 'block';
+    
+          if (id === 'dashboard-page') fetchCryptoData();
+          if (id === 'transactions') loadTransactions();
+          if (id === 'market-insights') fetchMarketInsights();
+        }
+    
+        async function fetchCryptoData() {
+          const ids = "bitcoin,ethereum,cardano";
+          const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids}`;
+          const res = await fetch(url);
+          const data = await res.json();
+          const tableBody = document.getElementById("crypto-table-body");
+          tableBody.innerHTML = "";
+          data.forEach(coin => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td style="cursor:pointer;" onclick="renderPriceChart('${coin.id}')">${coin.name} (${coin.symbol.toUpperCase()})</td>
+              <td>$${coin.current_price.toLocaleString()}</td>
+              <td style="color:${coin.price_change_percentage_24h >= 0 ? 'lightgreen' : 'salmon'}">${coin.price_change_percentage_24h.toFixed(2)}%</td>
+              <td>$${coin.market_cap.toLocaleString()}</td>
+              <td>$${coin.total_volume.toLocaleString()}</td>
+              <td>$${coin.high_24h.toLocaleString()}</td>
+              <td>$${coin.low_24h.toLocaleString()}</td>
+              <td>#${coin.market_cap_rank}</td>
+            `;
+            tableBody.appendChild(row);
+          });
+          renderPriceChart(data[0].id);
+        }
+    
+        async function renderPriceChart(coinId) {
+          const res = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=1`);
+          const data = await res.json();
+          const prices = data.prices.map(p => p[1]);
+          const labels = data.prices.map(p => new Date(p[0]).toLocaleTimeString());
+          const ctx = document.getElementById("priceChart").getContext("2d");
+          if (chart) chart.destroy();
+          chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: `${coinId.toUpperCase()} - 24h Price`,
+                data: prices,
+                borderColor: 'rgba(0, 200, 83, 1)',
+                fill: false
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: { legend: { display: true } },
+              scales: {
+                x: { display: true },
+                y: { display: true, beginAtZero: false }
+              }
+            }
+          });
+        }
+    
+        function startPayment() {
+          const crypto = document.getElementById("wallet-crypto").value;
+          const amount = document.getElementById("wallet-amount").value;
+          if (!amount || amount <= 0) return alert("Enter a valid amount.");
+          sessionStorage.setItem("pendingCrypto", crypto);
+          sessionStorage.setItem("pendingAmount", amount);
+          switchPage("payment-page");
+        }
+    
+        function processPayment(e) {
+          e.preventDefault();
+          const crypto = sessionStorage.getItem("pendingCrypto");
+          const amount = sessionStorage.getItem("pendingAmount");
+          const tx = {
+            date: new Date().toISOString().split("T")[0],
+            type: "Buy",
+            amount: `${amount} ${crypto}`,
+            status: "Completed"
+          };
+          const txs = JSON.parse(localStorage.getItem("transactions")) || [];
+          txs.push(tx);
+          localStorage.setItem("transactions", JSON.stringify(txs));
+          switchPage("confirmation-page");
+        }
+    
+        function loadTransactions() {
+          const table = document.getElementById("transactions-table-body");
+          table.innerHTML = "";
+          const txs = JSON.parse(localStorage.getItem("transactions")) || [];
+          if (txs.length === 0) {
+            table.innerHTML = `<tr><td colspan="4">No transactions yet.</td></tr>`;
+            return;
+          }
+          txs.forEach(tx => {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${tx.date}</td><td>${tx.type}</td><td>${tx.amount}</td><td>${tx.status}</td>`;
+            table.appendChild(row);
+          });
+        }
+    
+        async function fetchMarketInsights() {
+          const globalRes = await fetch("https://api.coingecko.com/api/v3/global");
+          const globalData = await globalRes.json();
+          const stats = globalData.data;
+          const insightList = document.getElementById("global-insights");
+          insightList.innerHTML = `
+            <li><strong>Active Cryptocurrencies:</strong> ${stats.active_cryptocurrencies}</li>
+            <li><strong>Total Market Cap:</strong> $${Number(stats.total_market_cap.usd).toLocaleString()}</li>
+            <li><strong>24h Volume:</strong> $${Number(stats.total_volume.usd).toLocaleString()}</li>
+            <li><strong>BTC Dominance:</strong> ${stats.market_cap_percentage.btc.toFixed(2)}%</li>
+            <li><strong>ETH Dominance:</strong> ${stats.market_cap_percentage.eth.toFixed(2)}%</li>
+            <li><strong>Markets:</strong> ${stats.markets}</li>`;
+          const trendingRes = await fetch("https://api.coingecko.com/api/v3/search/trending");
+          const trendingData = await trendingRes.json();
+          const trendingList = document.getElementById("trending-coins");
+          trendingList.innerHTML = "";
+          trendingData.coins.forEach((coin, index) => {
+            trendingList.innerHTML += `<li>${index + 1}. ${coin.item.name} (${coin.item.symbol}) — Rank #${coin.item.market_cap_rank}</li>`;
+          });
+        }
+      </script>
+    </body>
+    </html>
+    
