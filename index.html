@@ -13,6 +13,8 @@
     <!-- Auth Page -->
     <div id="auth-page" class="page" style="display:block; opacity:1">
       <h1>NetWorth Network</h1>
+      <img src="images/logo.jpeg" alt="NetWorth Network Logo"
+           style="max-width: 200px; margin: 10px auto; display: block;" />
       <div class="tab-buttons">
         <button class="tab active" onclick="toggleAuth('login')">Login</button>
         <button class="tab" onclick="toggleAuth('signup')">Sign Up</button>
@@ -151,45 +153,44 @@
     }
 
     async function fetchCryptoPrices() {
-        const apiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,matic-network&vs_currencies=usd&include_24hr_change=true";
-      
-        try {
-          const response = await fetch(apiUrl);
-          const data = await response.json();
-      
-          const tableBody = document.getElementById("crypto-table-body");
-          tableBody.innerHTML = ""; // Clear loading row
-      
-          const cryptoNames = {
-            bitcoin: "Bitcoin",
-            ethereum: "Ethereum",
-            binancecoin: "BNB",
-            solana: "Solana",
-            "matic-network": "Polygon"
-          };
-      
-          for (let id in cryptoNames) {
-            if (data[id]) {
-              const price = data[id].usd.toFixed(2);
-              const change = data[id].usd_24h_change.toFixed(2);
-              const color = change >= 0 ? "green" : "red";
-      
-              const row = document.createElement("tr");
-              row.innerHTML = `
-                <td>${cryptoNames[id]}</td>
-                <td>$${price}</td>
-                <td style="color:${color}">${change}%</td>
-              `;
-              tableBody.appendChild(row);
-            }
+      const apiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,matic-network&vs_currencies=usd&include_24hr_change=true";
+    
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+    
+        const tableBody = document.getElementById("crypto-table-body");
+        tableBody.innerHTML = ""; // Clear loading row
+    
+        const cryptoNames = {
+          bitcoin: "Bitcoin",
+          ethereum: "Ethereum",
+          binancecoin: "BNB",
+          solana: "Solana",
+          "matic-network": "Polygon"
+        };
+    
+        for (let id in cryptoNames) {
+          if (data[id]) {
+            const price = data[id].usd.toFixed(2);
+            const change = data[id].usd_24h_change.toFixed(2);
+            const color = change >= 0 ? "green" : "red";
+    
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${cryptoNames[id]}</td>
+              <td>$${price}</td>
+              <td style="color:${color}">${change}%</td>
+            `;
+            tableBody.appendChild(row);
           }
-        } catch (error) {
-          const tableBody = document.getElementById("crypto-table-body");
-          tableBody.innerHTML = `<tr><td colspan="3">Failed to fetch prices. Try again later.</td></tr>`;
-          console.error("Fetch error:", error);
         }
+      } catch (error) {
+        const tableBody = document.getElementById("crypto-table-body");
+        tableBody.innerHTML = `<tr><td colspan="3">Failed to fetch prices. Try again later.</td></tr>`;
+        console.error("Fetch error:", error);
       }
-      
+    }
   </script>
 
   <style>
