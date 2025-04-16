@@ -1,116 +1,201 @@
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="css/styles.css"/>
-    <head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NetWorth Network</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <meta name="theme-color" content="#121212" />
+</head>
 
 <body>
-    <div class="container">
-        <div id="auth-page" class="page" style="display:block; opacity:1">
-            <h1>NetWorth Network</h1>
-            <div class="tab-buttons">
-                <button class="tab active" onclick="toggleAuth('login')">Login</button>
-                <button class="tab" onclick="toggleAuth('signup')">Sign Up</button>
-            </div>
-            <div id="login-form">
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
-                <button onclick="enterApp()">Login</button>
-            </div>
-            <div id="signup-form" class="hidden">
-                <input type="text" placeholder="Full Name" required>
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Password" required>
-                <button onclick="enterApp()">Sign Up</button>
-            </div>
-        </div>
-
-        <div id="dashboard-page" class="page">
-            <h2>Welcome to Your Dashboard</h2>
-            <div class="tab-buttons">
-                <button class="tab" onclick="switchPage('dashboard')">Home</button>
-                <button class="tab" onclick="switchPage('price-listings')">Price Listings</button>
-                <button class="tab" onclick="switchPage('wallet')">Wallet</button>
-                <button class="tab" onclick="switchPage('transactions')">Transactions</button>
-                <button class="tab" onclick="switchPage('market-insights')">Market Insights</button>
-            </div>
-        </div>
-
-        <div id="price-listings" class="page">
-            <h2>Cryptocurrency Prices</h2>
-            <table>
-                <tr><th>Name</th><th>Price</th><th>Change</th></tr>
-                <tr><td>Bitcoin (BTC)</td><td>$64,000</td><td>+3.5%</td></tr>
-                <tr><td>Ethereum (ETH)</td><td>$3,200</td><td>+1.2%</td></tr>
-                <tr><td>Cardano (ADA)</td><td>$1.20</td><td>-0.8%</td></tr>
-            </table>
-        </div>
-
-        <div id="wallet" class="page">
-            <h2>Your Wallet</h2>
-            <form>
-                <label>Select Cryptocurrency:</label>
-                <select>
-                    <option>Bitcoin</option>
-                    <option>Ethereum</option>
-                    <option>Cardano</option>
-                </select>
-                <input type="number" placeholder="Amount">
-                <label>Select Payment Method:</label>
-                <select>
-                    <option>Apple Pay</option>
-                    <option>Google Pay</option>
-                    <option>Wire Transfer</option>
-                    <option>Credit Card</option>
-                </select>
-                <button>Buy</button>
-                <button>Sell</button>
-            </form>
-        </div>
-
-        <div id="transactions" class="page">
-            <h2>Transaction History</h2>
-            <table>
-                <tr><th>Date</th><th>Type</th><th>Amount</th><th>Status</th></tr>
-                <tr><td>2025-04-12</td><td>Buy</td><td>0.5 BTC</td><td>Completed</td></tr>
-            </table>
-        </div>
-
-        <div id="market-insights" class="page">
-            <h2>Market Insights</h2>
-            <p>Bitcoin is seeing a rise due to increased institutional interest. Ethereum is stabilizing post-update. Cardano's upcoming fork could affect prices.</p>
-        </div>
+  <div class="container">
+    <!-- Auth Page -->
+    <div id="auth-page" class="page" style="display:block; opacity:1">
+      <h1>NetWorth Network</h1>
+      <div class="tab-buttons">
+        <button class="tab active" onclick="toggleAuth('login')">Login</button>
+        <button class="tab" onclick="toggleAuth('signup')">Sign Up</button>
+      </div>
+      <div id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <button onclick="login()">Login</button>
+      </div>
+      <div id="signup-form" class="hidden">
+        <input type="text" id="signup-name" placeholder="Full Name" required>
+        <input type="email" id="signup-email" placeholder="Email" required>
+        <input type="password" id="signup-password" placeholder="Password" required>
+        <button onclick="signup()">Sign Up</button>
+      </div>
     </div>
 
-    <script>
-        function toggleAuth(type) {
-            document.getElementById('login-form').classList.add('hidden');
-            document.getElementById('signup-form').classList.add('hidden');
-            document.querySelectorAll('.tab-buttons .tab').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.tab[onclick="toggleAuth('${type}')"]`).classList.add('active');
-            document.getElementById(`${type}-form`).classList.remove('hidden');
-        }
+    <!-- Dashboard -->
+    <div id="dashboard-page" class="page" style="display:none; opacity:0">
+      <h2>Welcome to Your Dashboard</h2>
+      <div class="tab-buttons">
+        <button class="tab" onclick="switchPage('dashboard-page')">Home</button>
+        <button class="tab" onclick="switchPage('wallet')">Wallet</button>
+        <button class="tab" onclick="switchPage('transactions')">Transactions</button>
+        <button class="tab" onclick="switchPage('market-insights')">Market Insights</button>
+      </div>
 
-        function enterApp() {
-            document.getElementById('auth-page').style.display = 'none';
-            showPage('dashboard-page');
-            showPage('price-listings');
-        }
+      <!-- Show Crypto Prices in Dashboard -->
+      <h3>Live Cryptocurrency Prices</h3>
+      <table id="crypto-table">
+        <thead>
+          <tr><th>Name</th><th>Price</th><th>Change</th></tr>
+        </thead>
+        <tbody id="crypto-table-body">
+          <tr><td colspan="3">Loading data...</td></tr>
+        </tbody>
+      </table>
+    </div>
 
-        function switchPage(id) {
-            document.querySelectorAll('.page').forEach(p => {
-                if (p.id !== 'dashboard-page') {
-                    p.style.display = 'none';
-                    p.style.opacity = 0;
-                }
-            });
-            showPage(id);
-        }
+    <!-- Wallet -->
+    <div id="wallet" class="page">
+      <h2>Your Wallet</h2>
+      <form>
+        <label>Select Cryptocurrency:</label>
+        <select>
+          <option>Bitcoin</option>
+          <option>Ethereum</option>
+          <option>Cardano</option>
+        </select>
+        <input type="number" placeholder="Amount">
+        <label>Select Payment Method:</label>
+        <select>
+          <option>Apple Pay</option>
+          <option>Google Pay</option>
+          <option>Wire Transfer</option>
+          <option>Credit Card</option>
+        </select>
+        <button type="button">Buy</button>
+        <button type="button">Sell</button>
+      </form>
+    </div>
 
-        function showPage(id) {
-            const el = document.getElementById(id);
-            el.style.display = 'block';
-            setTimeout(() => el.style.opacity = 1, 10);
+    <!-- Transactions -->
+    <div id="transactions" class="page">
+      <h2>Transaction History</h2>
+      <table>
+        <tr><th>Date</th><th>Type</th><th>Amount</th><th>Status</th></tr>
+        <tr><td>2025-04-12</td><td>Buy</td><td>0.5 BTC</td><td>Completed</td></tr>
+      </table>
+    </div>
+
+    <!-- Market Insights -->
+    <div id="market-insights" class="page">
+      <h2>Market Insights</h2>
+      <p>Bitcoin is seeing a rise due to increased institutional interest. Ethereum is stabilizing post-update. Cardano's upcoming fork could affect prices.</p>
+    </div>
+  </div>
+
+  <script>
+    function toggleAuth(type) {
+      const loginForm = document.getElementById("login-form");
+      const signupForm = document.getElementById("signup-form");
+
+      if (type === "login") {
+        loginForm.classList.remove("hidden");
+        signupForm.classList.add("hidden");
+      } else {
+        signupForm.classList.remove("hidden");
+        loginForm.classList.add("hidden");
+      }
+    }
+
+    function signup() {
+      const name = document.getElementById("signup-name").value;
+      const email = document.getElementById("signup-email").value;
+      const password = document.getElementById("signup-password").value;
+
+      if (email && password) {
+        localStorage.setItem("user", JSON.stringify({ name, email, password }));
+        alert("Sign up successful! Please login.");
+        toggleAuth('login');
+      } else {
+        alert("Please fill in all fields.");
+      }
+    }
+
+    function login() {
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      if (user && user.email === email && user.password === password) {
+        enterApp();
+      } else {
+        alert("Invalid email or password");
+      }
+    }
+
+    function enterApp() {
+      document.getElementById("auth-page").style.display = "none";
+      document.getElementById("dashboard-page").style.display = "block";
+      document.getElementById("dashboard-page").style.opacity = 1;
+      fetchCryptoPrices();
+    }
+
+    function switchPage(pageId) {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => {
+        page.style.display = 'none';
+        page.style.opacity = 0;
+      });
+
+      const activePage = document.getElementById(pageId);
+      activePage.style.display = 'block';
+      activePage.style.opacity = 1;
+    }
+
+    async function fetchCryptoPrices() {
+        const apiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,matic-network&vs_currencies=usd&include_24hr_change=true";
+      
+        try {
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+      
+          const tableBody = document.getElementById("crypto-table-body");
+          tableBody.innerHTML = ""; // Clear loading row
+      
+          const cryptoNames = {
+            bitcoin: "Bitcoin",
+            ethereum: "Ethereum",
+            binancecoin: "BNB",
+            solana: "Solana",
+            "matic-network": "Polygon"
+          };
+      
+          for (let id in cryptoNames) {
+            if (data[id]) {
+              const price = data[id].usd.toFixed(2);
+              const change = data[id].usd_24h_change.toFixed(2);
+              const color = change >= 0 ? "green" : "red";
+      
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${cryptoNames[id]}</td>
+                <td>$${price}</td>
+                <td style="color:${color}">${change}%</td>
+              `;
+              tableBody.appendChild(row);
+            }
+          }
+        } catch (error) {
+          const tableBody = document.getElementById("crypto-table-body");
+          tableBody.innerHTML = `<tr><td colspan="3">Failed to fetch prices. Try again later.</td></tr>`;
+          console.error("Fetch error:", error);
         }
-    </script>
+      }
+      
+  </script>
+
+  <style>
+    .hidden { display: none; }
+    .tab.active { font-weight: bold; }
+    .page { display: none; opacity: 0; transition: opacity 0.3s ease; }
+  </style>
 </body>
 </html>
